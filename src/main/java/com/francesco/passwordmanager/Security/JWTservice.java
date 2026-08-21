@@ -42,14 +42,16 @@ public class JWTservice {
     }
 
     public boolean isTokenValid(String token, Utente userDetails) {
-        try {
-                return userDetails != null
-                    && extractMail(token).equals(userDetails.getEmail())
-                    && !isTokenExpired(normalizeToken(token));
-        } catch (Exception exception) {
-            return false;
-        }
+    if (userDetails == null || userDetails.getEmail() == null) {
+        return false;
     }
+    try {
+        return extractMail(token).equals(userDetails.getEmail())
+            && !isTokenExpired(normalizeToken(token));
+    } catch (Exception exception) {
+        return false;
+    }
+}
 
     private boolean isTokenExpired(String token) {
         return extractClaim(token, Claims::getExpiration).before(new Date());

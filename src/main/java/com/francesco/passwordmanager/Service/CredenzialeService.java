@@ -99,22 +99,29 @@ public class CredenzialeService
 
 
     
-    private boolean checkToken(String token) throws TokenNonValidoException
-    {
-        try {
-            String email = jwtService.extractMail(token);
-            Utente utente = utenteRepository.findByEmail(email);
+   private boolean checkToken(String token) throws TokenNonValidoException {
+    try {
+        String email = jwtService.extractMail(token);
+        if (email == null || email.isBlank()) {
+            throw new TokenNonValidoException("Email non valida nel token");
+        }
 
-            if (!jwtService.isTokenValid(token, utente)) {
-                throw new TokenNonValidoException("Token non valido");
-            }
-        } catch (TokenNonValidoException exception) {
-            throw exception;
-        } catch (RuntimeException exception) {
+        Utente utente = utenteRepository.findByEmail(email);
+        if (utente == null) {
+            throw new TokenNonValidoException("Utente non trovato");
+        }
+
+        if (!jwtService.isTokenValid(token, utente)) {
             throw new TokenNonValidoException("Token non valido");
         }
-        return true;
+    } catch (TokenNonValidoException exception) {
+        throw exception;
+    } catch (RuntimeException exception) {
+        exception.printStackTrace();
+        throw new TokenNonValidoException("Token non valido: " + exception.getMessage());
     }
+    return true;
+}
 
     private Long getUtenteIdFromToken(String token) throws TokenNonValidoException {
         if (!checkToken(token)) {
