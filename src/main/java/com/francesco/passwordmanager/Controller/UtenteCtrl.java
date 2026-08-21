@@ -4,13 +4,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
 
 import com.francesco.passwordmanager.Exception.*;
 import com.francesco.passwordmanager.DTO.RegisterRequest;
@@ -31,7 +29,7 @@ public class UtenteCtrl
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Object> registerUser(@RequestBody RegisterRequest request)
+    public ResponseEntity<Object> registerUser(@Valid @RequestBody RegisterRequest request)
     {
         try
         {
@@ -45,7 +43,7 @@ public class UtenteCtrl
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Object> loginUser(@RequestBody LoginRequest request)
+    public ResponseEntity<Object> loginUser(@Valid @RequestBody LoginRequest request)
     {
        try
         {

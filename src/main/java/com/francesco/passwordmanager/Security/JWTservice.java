@@ -36,13 +36,14 @@ public class JWTservice {
     }
 
     public String extractMail(String token) {
-        return extractClaim(token, Claims::getSubject);
+        return extractClaim(normalizeToken(token), Claims::getSubject);
     }
 
     public boolean isTokenValid(String token, Utente userDetails) {
         try {
-            String email = extractMail(token);
-            return email.equals(userDetails.getEmail()) && !isTokenExpired(token);
+                return userDetails != null
+                    && extractMail(token).equals(userDetails.getEmail())
+                    && !isTokenExpired(normalizeToken(token));
         } catch (Exception exception) {
             return false;
         }
@@ -67,5 +68,12 @@ public class JWTservice {
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public String normalizeToken(String token) {
+        if (token == null || token.isBlank()) {
+            return "";
+        }
+        return token.startsWith("Bearer ") ? token.substring(7) : token;
     }
 }

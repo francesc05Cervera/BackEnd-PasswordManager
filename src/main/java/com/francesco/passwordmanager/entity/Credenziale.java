@@ -23,19 +23,19 @@ public class Credenziale
     @Column(nullable = false)
     private String username;
 
-    @Column(nullable = false)
-    private String HashedPassword;
+    @Column(nullable = false, name = "encrypted_password")
+    private String encryptedPassword;
 
     @Column(nullable = false)
     private Long utenteId;
     
     public Credenziale() {}
 
-    public Credenziale(String nomeSito, String urlSito, String username, String hashedPassword) {
+    public Credenziale(String nomeSito, String urlSito, String username, String encryptedPassword) {
         this.nomeSito = nomeSito;
         this.urlSito = urlSito;
         this.username = username;
-        this.HashedPassword = hashedPassword;
+        this.encryptedPassword = encryptedPassword;
     }
 
     public Long getId() {
@@ -66,12 +66,19 @@ public class Credenziale
         this.username = username;
     }
 
-    public String getHashedPassword() {
-        return HashedPassword;
+    public String getEncryptedPassword() {
+        return encryptedPassword;
     }
 
-    public void setHashedPassword(String hashedPassword) {
-        this.HashedPassword = hashedPassword;
+    public void setEncryptedPassword(String encryptedPassword) {
+        this.encryptedPassword = encryptedPassword;
+    }
+
+    public Long getUtenteId() {
+        return utenteId;
+    }
+    public void setUtenteId(Long utenteId) {
+        this.utenteId = utenteId;
     }
     
 }

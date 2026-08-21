@@ -14,6 +14,7 @@ import com.francesco.passwordmanager.entity.Utente;
 import com.francesco.passwordmanager.Repository.UtenteRepo;
 import com.francesco.passwordmanager.Security.JWTservice;
 
+@Service
 public class UtenteService 
 {
     private final UtenteRepo utenteRepository;
@@ -29,7 +30,7 @@ public class UtenteService
     public void register(RegisterRequest request) throws RegistrazioneFallitaException 
     {
         Utente exist = utenteRepository.findByEmail(request.getEmail());
-        if (exist == null) { throw new RegistrazioneFallitaException("Email già registrata"); }
+        if (exist != null) { throw new RegistrazioneFallitaException("Email già registrata"); }
 
         Utente utente = new Utente();
         utente.setEmail(request.getEmail());
@@ -58,17 +59,19 @@ public class UtenteService
 
     public meResponse getMe(String token) throws NonTrovatoException, TokenNonValidoException 
     {
-        String email = jwtService.extractMail(token);
-        Utente utente = utenteRepository.findByEmail(email);
-        if (utente == null) {
-            throw new NonTrovatoException("Token non valido o utente non trovato");
-        }
+        try {
+            String email = jwtService.extractMail(token);
+            Utente utente = utenteRepository.findByEmail(email);
+            if (utente == null || !jwtService.isTokenValid(token, utente)) {
+                throw new TokenNonValidoException("Token non valido");
+            }
 
-        if (!jwtService.isTokenValid(token, utente)) {
+            return new meResponse(utente.getEmail());
+        } catch (TokenNonValidoException exception) {
+            throw exception;
+        } catch (RuntimeException exception) {
             throw new TokenNonValidoException("Token non valido");
         }
-
-        return new meResponse(utente.getEmail());
     }
 
 
