@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.francesco.passwordmanager.entity.Utente;
+
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
@@ -65,10 +67,10 @@ public class JWTservice {
                 .getBody();
     }
 
-    private Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
+
+private Key getSigningKey() {
+    return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+}
 
     public String normalizeToken(String token) {
         if (token == null || token.isBlank()) {
