@@ -5,8 +5,11 @@ import org.springframework.stereotype.Service;
 import com.francesco.passwordmanager.DTO.LoginRequest;
 import com.francesco.passwordmanager.DTO.LoginResponse;
 import com.francesco.passwordmanager.DTO.RegisterRequest;
+import com.francesco.passwordmanager.DTO.meResponse;
 import com.francesco.passwordmanager.Exception.LoginFallitoException;
+import com.francesco.passwordmanager.Exception.NonTrovatoException;
 import com.francesco.passwordmanager.Exception.RegistrazioneFallitaException;
+import com.francesco.passwordmanager.Exception.TokenNonValidoException;
 import com.francesco.passwordmanager.entity.Utente;
 import com.francesco.passwordmanager.Repository.UtenteRepo;
 import com.francesco.passwordmanager.Security.JWTservice;
@@ -53,6 +56,20 @@ public class UtenteService
         return new LoginResponse(token);
     }
 
+    public meResponse getMe(String token) throws NonTrovatoException, TokenNonValidoException 
+    {
+        String email = jwtService.extractMail(token);
+        Utente utente = utenteRepository.findByEmail(email);
+        if (utente == null) {
+            throw new NonTrovatoException("Token non valido o utente non trovato");
+        }
+
+        if (!jwtService.isTokenValid(token, utente)) {
+            throw new TokenNonValidoException("Token non valido");
+        }
+
+        return new meResponse(utente.getEmail());
+    }
 
 
 

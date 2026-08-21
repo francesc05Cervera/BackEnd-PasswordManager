@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.http.ResponseEntity;
 
 import com.francesco.passwordmanager.Exception.*;
 import com.francesco.passwordmanager.DTO.RegisterRequest;
+import com.francesco.passwordmanager.DTO.meResponse;
 import com.francesco.passwordmanager.DTO.LoginRequest;
 import com.francesco.passwordmanager.DTO.LoginResponse;
 import com.francesco.passwordmanager.Service.UtenteService;
@@ -49,9 +51,22 @@ public class UtenteCtrl
         {
             LoginResponse res = utenteService.login(request);
             return ResponseEntity.ok(res);
-            
+
         } catch(LoginFallitoException e)
         {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<Object> me(@RequestHeader("Authorization") String token)
+    {
+        try {
+            meResponse response = utenteService.getMe(token);
+            return ResponseEntity.ok(response);
+        } catch (NonTrovatoException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (TokenNonValidoException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
