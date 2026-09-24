@@ -23,7 +23,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/credenziali")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "https://passwordmanager-5w59.onrender.com")
 public class CredenzialeCtrl 
 {
     private final CredenzialeService credenzialeService;

@@ -19,7 +19,7 @@ import com.francesco.passwordmanager.Service.UtenteService;
 
 @RestController
 @RequestMapping("/api/utente")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "https://passwordmanager-5w59.onrender.com")
 public class UtenteCtrl 
 {
     private final UtenteService utenteService;
